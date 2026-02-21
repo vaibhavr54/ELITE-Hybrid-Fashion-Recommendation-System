@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ELITE — AI Fashion Discovery</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Hero Section -->
+    <div class="hero">
+        <div class="hero-content">
+            <div class="brand-mark">ELITE</div>
+            <h1 class="hero-title">
+                AI-Powered Fashion<br>
+                <span class="gradient-text">Discovery Engine</span>
+            </h1>
+            <p class="hero-subtitle">
+                Multimodal intelligence combining visual aesthetics, semantic understanding,<br class="hide-mobile">
+                and metadata insights to curate your perfect style match
+            </p>
+        </div>
+        
+        <div class="scroll-indicator">
+            <div class="scroll-line"></div>
+            <span>Explore</span>
+        </div>
+    </div>
+
+    <!-- Main Discovery Interface -->
+    <div class="main-container">
+        
+        <!-- Discovery Controls -->
+        <div class="discovery-card">
+            <div class="card-header">
+                <h2>Discovery Parameters</h2>
+                <div class="header-accent"></div>
+            </div>
+
+            <form action="/recommend" method="POST" id="discoveryForm">
+                
+                <!-- Product Selection -->
+                <div class="form-section">
+                    <label class="form-label">
+                        <span class="label-text">Select Product</span>
+                        <span class="label-subtitle">Search by name, brand, or browse by category</span>
+                    </label>
+                    
+                    <!-- Search and Filter Tabs -->
+                    <div class="selection-tabs">
+                        <button type="button" class="tab-btn active" onclick="switchTab('search')">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                <circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="2"/>
+                                <path d="M11 11L14 14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                            Search Products
+                        </button>
+                        <button type="button" class="tab-btn" onclick="switchTab('browse')">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                <rect x="2" y="2" width="5" height="5" stroke="currentColor" stroke-width="2"/>
+                                <rect x="9" y="2" width="5" height="5" stroke="currentColor" stroke-width="2"/>
+                                <rect x="2" y="9" width="5" height="5" stroke="currentColor" stroke-width="2"/>
+                                <rect x="9" y="9" width="5" height="5" stroke="currentColor" stroke-width="2"/>
+                            </svg>
+                            Browse by Category
+                        </button>
+                    </div>
+
+                    <!-- Search Tab Content -->
+                    <div id="searchTab" class="tab-content active">
+                        <div class="search-input-wrapper">
+                            <svg class="search-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                <circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="2"/>
+                                <path d="M13.5 13.5L17 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                            <input 
+                                type="text" 
+                                id="productSearch" 
+                                placeholder="Search by product name, brand, or keywords..."
+                                autocomplete="off">
+                            <button type="button" class="clear-search" id="clearSearch" style="display: none;" onclick="clearSearch()">
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                    <path d="M4 4L12 12M4 12L12 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                </svg>
+                            </button>
+                        </div>
+
+                        <!-- Search Results Dropdown -->
+                        <div id="searchResults" class="search-results hidden"></div>
+                        
+                        <!-- Quick Filters -->
+                        <div class="quick-filters">
+                            <span class="filter-label">Quick filters:</span>
+                            <button type="button" class="filter-chip" onclick="filterByBrand('Nike')">Nike</button>
+                            <button type="button" class="filter-chip" onclick="filterByBrand('Adidas')">Adidas</button>
+                            <button type="button" class="filter-chip" onclick="filterByCategory('Shoes')">Shoes</button>
+                            <button type="button" class="filter-chip" onclick="filterByCategory('Dress')">Dresses</button>
+                        </div>
+                    </div>
+
+                    <!-- Browse Tab Content -->
+                    <div id="browseTab" class="tab-content hidden">
+                        <div class="category-grid">
+                            <button type="button" class="category-card" onclick="filterByCategory('Shoes')">
+                                <div class="category-icon">👟</div>
+                                <div class="category-name">Shoes</div>
+                            </button>
+                            <button type="button" class="category-card" onclick="filterByCategory('Dress')">
+                                <div class="category-icon">👗</div>
+                                <div class="category-name">Dresses</div>
+                            </button>
+                            <button type="button" class="category-card" onclick="filterByCategory('Shirt')">
+                                <div class="category-icon">👔</div>
+                                <div class="category-name">Shirts</div>
+                            </button>
+                            <button type="button" class="category-card" onclick="filterByCategory('Pants')">
+                                <div class="category-icon">👖</div>
+                                <div class="category-name">Pants</div>
+                            </button>
+                            <button type="button" class="category-card" onclick="filterByCategory('Jacket')">
+                                <div class="category-icon">🧥</div>
+                                <div class="category-name">Jackets</div>
+                            </button>
+                            <button type="button" class="category-card" onclick="filterByCategory('Accessories')">
+                                <div class="category-icon">👜</div>
+                                <div class="category-name">Accessories</div>
+                            </button>
+                        </div>
+                        
+                        <!-- Filtered Results -->
+                        <div id="browseResults" class="browse-results hidden"></div>
+                    </div>
+
+                    <!-- Hidden select for form submission -->
+                    <select name="query_index" id="productSelect" required style="display: none;">
+                        <option value="">Please select a product</option>
+                        {% for product in products %}
+                            <option value="{{ product.index }}" 
+                                    data-image="{{ product.asin }}" 
+                                    data-brand="{{ product.brand }}"
+                                    data-price="{{ product.formatted_price }}"
+                                    data-title="{{ product.title }}"
+                                    data-category="{{ product.product_type_name }}">
+                                {{ product.title }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                    
+                    <!-- Product Preview -->
+                    <div id="productPreview" class="product-preview hidden">
+                        <div class="preview-image-container">
+                            <img id="previewImage" src="" alt="Product Preview">
+                        </div>
+                        <div class="preview-details">
+                            <div id="previewTitle" class="preview-title"></div>
+                            <div id="previewMeta" class="preview-meta"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Results Count -->
+                <div class="form-section">
+                    <label class="form-label">
+                        <span class="label-text">Results to Show</span>
+                        <span class="label-subtitle">Number of recommendations (1-20)</span>
+                    </label>
+                    <div class="number-input-wrapper">
+                        <input type="number" name="top_k" id="topK" value="10" min="1" max="25" required>
+                        <div class="input-controls">
+                            <button type="button" class="increment" onclick="adjustValue('topK', 1)">
+                                <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                                    <path d="M6 2V10M2 6H10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                </svg>
+                            </button>
+                            <button type="button" class="decrement" onclick="adjustValue('topK', -1)">
+                                <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                                    <path d="M2 6H10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Advanced Controls Toggle -->
+                <div class="advanced-toggle">
+                    <button type="button" id="advancedBtn" onclick="toggleAdvanced()">
+                        <span>Advanced Settings</span>
+                        <svg class="toggle-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                            <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Advanced Settings Panel -->
+                <div id="advancedPanel" class="advanced-panel hidden">
+                    
+                    <div class="panel-header">
+                        <h3>Similarity Weights</h3>
+                        <p>Adjust the importance of each factor in finding similar products</p>
+                    </div>
+
+                    <!-- Weight Sliders -->
+                    <div class="weights-grid">
+                        <div class="weight-control">
+                            <div class="weight-header">
+                                <label>Description Similarity</label>
+                                <span class="weight-value" id="textValue">40%</span>
+                            </div>
+                            <input type="range" name="w_text" id="wText" min="0" max="1" step="0.05" value="0.4" 
+                                   oninput="updateWeight('text', this.value)">
+                            <div class="slider-track"></div>
+                            <p class="weight-description">Match based on product titles and descriptions</p>
+                        </div>
+
+                        <div class="weight-control">
+                            <div class="weight-header">
+                                <label>Visual Similarity</label>
+                                <span class="weight-value" id="imgValue">30%</span>
+                            </div>
+                            <input type="range" name="w_img" id="wImg" min="0" max="1" step="0.05" value="0.3" 
+                                   oninput="updateWeight('img', this.value)">
+                            <div class="slider-track"></div>
+                            <p class="weight-description">Match based on image features and style</p>
+                        </div>
+
+                        <div class="weight-control">
+                            <div class="weight-header">
+                                <label>Metadata Match</label>
+                                <span class="weight-value" id="metaValue">30%</span>
+                            </div>
+                            <input type="range" name="w_meta" id="wMeta" min="0" max="1" step="0.05" value="0.3" 
+                                   oninput="updateWeight('meta', this.value)">
+                            <div class="slider-track"></div>
+                            <p class="weight-description">Match based on brand, category, and attributes</p>
+                        </div>
+                    </div>
+
+                    <!-- Diversity Control -->
+                    <div class="diversity-section">
+                        <div class="weight-control">
+                            <div class="weight-header">
+                                <label>Diversity Level</label>
+                                <span class="weight-value" id="lambdaValue">70%</span>
+                            </div>
+                            <input type="range" name="lambda" id="lambda" min="0" max="1" step="0.05" value="0.7" 
+                                   oninput="updateWeight('lambda', this.value)">
+                            <div class="slider-track"></div>
+                            <div class="diversity-labels">
+                                <span>More Variety</span>
+                                <span>More Similar</span>
+                            </div>
+                            <p class="weight-description">Balance between similarity and diversity in results</p>
+                        </div>
+                    </div>
+
+                    <!-- Reset Button -->
+                    <button type="button" class="reset-btn" onclick="resetWeights()">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                            <path d="M2 8C2 4.68629 4.68629 2 8 2C11.3137 2 14 4.68629 14 8C14 11.3137 11.3137 14 8 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                            <path d="M8 14L6 12M8 14L10 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        Reset to Defaults
+                    </button>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="discover-btn" id="submitBtn">
+                    <span class="btn-text">Discover Similar Products</span>
+                    <svg class="btn-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <path d="M4 10H16M16 10L11 5M16 10L11 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
+
+            </form>
+        </div>
+
+        <!-- How It Works Section -->
+        <div class="info-section">
+            <h3 class="info-title">How It Works</h3>
+            <div class="info-grid">
+                <div class="info-card">
+                    <div class="info-icon">
+                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                            <circle cx="16" cy="16" r="12" stroke="currentColor" stroke-width="2"/>
+                            <path d="M16 12V16L19 19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                    <h4>FAISS Retrieval</h4>
+                    <p>Lightning-fast similarity search using Facebook's FAISS library to retrieve candidate products</p>
+                </div>
+                
+                <div class="info-card">
+                    <div class="info-icon">
+                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                            <rect x="6" y="6" width="20" height="20" rx="2" stroke="currentColor" stroke-width="2"/>
+                            <path d="M6 12H26M12 6V26M20 12V26" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                    </div>
+                    <h4>Multimodal Fusion</h4>
+                    <p>Combines text embeddings, visual features, and metadata to understand products holistically</p>
+                </div>
+                
+                <div class="info-card">
+                    <div class="info-icon">
+                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                            <path d="M16 4L4 10L16 16L28 10L16 4Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                            <path d="M4 16L16 22L28 16M4 22L16 28L28 22" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                    <h4>Smart Boosting</h4>
+                    <p>Applies business logic to boost relevant categories and price ranges for better recommendations</p>
+                </div>
+                
+                <div class="info-card">
+                    <div class="info-icon">
+                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                            <circle cx="10" cy="16" r="4" stroke="currentColor" stroke-width="2"/>
+                            <circle cx="22" cy="10" r="4" stroke="currentColor" stroke-width="2"/>
+                            <circle cx="22" cy="22" r="4" stroke="currentColor" stroke-width="2"/>
+                            <path d="M14 16H18M14 14L18 10M14 18L18 22" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                    </div>
+                    <h4>MMR Re-ranking</h4>
+                    <p>Maximal Marginal Relevance algorithm balances similarity with diversity for varied results</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <div class="brand-mark-small">LUXE</div>
+                <p>AI-Powered Fashion Discovery</p>
+            </div>
+            <div class="footer-tech">
+                <span>Powered by</span>
+                <div class="tech-badges">
+                    <span class="badge">FAISS</span>
+                    <span class="badge">Flask</span>
+                    <span class="badge">Neural Networks</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay hidden">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <p class="loading-text">Analyzing Products...</p>
+            <p class="loading-subtext">Processing multimodal embeddings</p>
+        </div>
+    </div>
+
+    <script>
+        // Store all products for searching
+        let allProducts = [];
+        const productSelect = document.getElementById('productSelect');
+        const searchInput = document.getElementById('productSearch');
+        const searchResults = document.getElementById('searchResults');
+        const browseResults = document.getElementById('browseResults');
+        const clearSearchBtn = document.getElementById('clearSearch');
+        
+        // Load all products into array
+        Array.from(productSelect.options).forEach(option => {
+            if (option.value) {
+                allProducts.push({
+                    index: option.value,
+                    title: option.dataset.title,
+                    brand: option.dataset.brand,
+                    price: option.dataset.price,
+                    asin: option.dataset.image,
+                    category: option.dataset.category
+                });
+            }
+        });
+
+        // Tab Switching
+        function switchTab(tab) {
+            const tabs = document.querySelectorAll('.tab-btn');
+            const contents = document.querySelectorAll('.tab-content');
+            
+            tabs.forEach(t => t.classList.remove('active'));
+            contents.forEach(c => c.classList.add('hidden'));
+            
+            if (tab === 'search') {
+                tabs[0].classList.add('active');
+                document.getElementById('searchTab').classList.remove('hidden');
+                searchInput.focus();
+            } else {
+                tabs[1].classList.add('active');
+                document.getElementById('browseTab').classList.remove('hidden');
+            }
+        }
+
+        // Search Functionality
+        searchInput.addEventListener('input', function(e) {
+            const query = e.target.value.toLowerCase().trim();
+            
+            if (query.length === 0) {
+                searchResults.classList.add('hidden');
+                clearSearchBtn.style.display = 'none';
+                return;
+            }
+            
+            clearSearchBtn.style.display = 'flex';
+            
+            // Search in title, brand, and category
+            const results = allProducts.filter(product => {
+                return product.title.toLowerCase().includes(query) ||
+                       product.brand.toLowerCase().includes(query) ||
+                       product.category.toLowerCase().includes(query);
+            }).slice(0, 20); // Limit to 20 results
+            
+            displaySearchResults(results, query);
+        });
+
+        function displaySearchResults(results, query) {
+            if (results.length === 0) {
+                searchResults.innerHTML = `
+                    <div class="no-results">
+                        <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
+                            <circle cx="24" cy="24" r="20" stroke="currentColor" stroke-width="2"/>
+                            <path d="M24 16V26M24 32V32.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                        <p>No products found for "${query}"</p>
+                        <span>Try different keywords or browse by category</span>
+                    </div>
+                `;
+                searchResults.classList.remove('hidden');
+                return;
+            }
+            
+            searchResults.innerHTML = `
+                <div class="results-header">
+                    <span>Found ${results.length} product${results.length > 1 ? 's' : ''}</span>
+                </div>
+                ${results.map(product => `
+                    <div class="result-item" onclick="selectProduct('${product.index}')">
+                        <div class="result-image">
+                            <img src="/static/images/${product.asin}.jpg" alt="${product.title}" loading="lazy">
+                        </div>
+                        <div class="result-info">
+                            <div class="result-title">${highlightMatch(product.title, query)}</div>
+                            <div class="result-meta">
+                                <span class="result-brand">${product.brand}</span>
+                                <span class="result-price">${product.price}</span>
+                            </div>
+                            <div class="result-category">${product.category}</div>
+                        </div>
+                    </div>
+                `).join('')}
+            `;
+            searchResults.classList.remove('hidden');
+        }
+
+        function highlightMatch(text, query) {
+            const regex = new RegExp(`(${query})`, 'gi');
+            return text.replace(regex, '<mark>$1</mark>');
+        }
+
+        function clearSearch() {
+            searchInput.value = '';
+            searchResults.classList.add('hidden');
+            clearSearchBtn.style.display = 'none';
+            searchInput.focus();
+        }
+
+        // Filter Functions
+        function filterByBrand(brand) {
+            const results = allProducts.filter(p => 
+                p.brand.toLowerCase().includes(brand.toLowerCase())
+            ).slice(0, 20);
+            
+            searchInput.value = brand;
+            displaySearchResults(results, brand);
+        }
+
+        function filterByCategory(category) {
+            const results = allProducts.filter(p => 
+                p.category.toLowerCase().includes(category.toLowerCase())
+            ).slice(0, 30);
+            
+            if (results.length === 0) {
+                browseResults.innerHTML = `
+                    <div class="no-results">
+                        <p>No products found in this category</p>
+                    </div>
+                `;
+                browseResults.classList.remove('hidden');
+                return;
+            }
+            
+            browseResults.innerHTML = `
+                <div class="results-header">
+                    <span>${category} Products (${results.length} items)</span>
+                    <button type="button" onclick="closeBrowseResults()" class="close-browse">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                            <path d="M4 4L12 12M4 12L12 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="browse-grid">
+                    ${results.map(product => `
+                        <div class="browse-item" onclick="selectProduct('${product.index}')">
+                            <div class="browse-image">
+                                <img src="/static/images/${product.asin}.jpg" alt="${product.title}" loading="lazy">
+                            </div>
+                            <div class="browse-info">
+                                <div class="browse-brand">${product.brand}</div>
+                                <div class="browse-title">${product.title.substring(0, 50)}${product.title.length > 50 ? '...' : ''}</div>
+                                <div class="browse-price">${product.price}</div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            browseResults.classList.remove('hidden');
+        }
+
+        function closeBrowseResults() {
+            browseResults.classList.add('hidden');
+        }
+
+        // Select Product
+        function selectProduct(index) {
+            productSelect.value = index;
+            
+            // Trigger change event to show preview
+            const event = new Event('change');
+            productSelect.dispatchEvent(event);
+            
+            // Close search/browse results
+            searchResults.classList.add('hidden');
+            browseResults.classList.add('hidden');
+            
+            // Scroll to preview
+            setTimeout(() => {
+                document.getElementById('productPreview').scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'nearest' 
+                });
+            }, 100);
+        }
+
+        // Product Preview
+        const productPreview = document.getElementById('productPreview');
+        const previewImage = document.getElementById('previewImage');
+        const previewTitle = document.getElementById('previewTitle');
+        const previewMeta = document.getElementById('previewMeta');
+
+        productSelect.addEventListener('change', function() {
+            const selectedOption = this.options[this.selectedIndex];
+            if (selectedOption.value) {
+                const asin = selectedOption.dataset.image;
+                const brand = selectedOption.dataset.brand;
+                const price = selectedOption.dataset.price;
+                
+                previewImage.src = `/static/images/${asin}.jpg`;
+                previewTitle.textContent = selectedOption.dataset.title;
+                previewMeta.innerHTML = `<strong>${brand}</strong> • ${price}`;
+                
+                productPreview.classList.remove('hidden');
+                productPreview.classList.add('fade-in');
+            } else {
+                productPreview.classList.add('hidden');
+            }
+        });
+
+        // Close search results when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.search-input-wrapper') && 
+                !e.target.closest('.search-results')) {
+                searchResults.classList.add('hidden');
+            }
+        });
+
+        // Weight Updates
+        function updateWeight(type, value) {
+            const percentage = Math.round(value * 100);
+            document.getElementById(`${type}Value`).textContent = `${percentage}%`;
+            
+            // Normalize weights
+            if (type !== 'lambda') {
+                normalizeWeights(type);
+            }
+        }
+
+        function normalizeWeights(changedType) {
+            const wText = parseFloat(document.getElementById('wText').value);
+            const wImg = parseFloat(document.getElementById('wImg').value);
+            const wMeta = parseFloat(document.getElementById('wMeta').value);
+            
+            const total = wText + wImg + wMeta;
+            
+            if (total > 0) {
+                document.getElementById('textValue').textContent = Math.round((wText / total) * 100) + '%';
+                document.getElementById('imgValue').textContent = Math.round((wImg / total) * 100) + '%';
+                document.getElementById('metaValue').textContent = Math.round((wMeta / total) * 100) + '%';
+            }
+        }
+
+        // Advanced Panel Toggle
+        function toggleAdvanced() {
+            const panel = document.getElementById('advancedPanel');
+            const icon = document.querySelector('.toggle-icon');
+            
+            panel.classList.toggle('hidden');
+            icon.classList.toggle('rotated');
+        }
+
+        // Reset Weights
+        function resetWeights() {
+            document.getElementById('wText').value = 0.4;
+            document.getElementById('wImg').value = 0.3;
+            document.getElementById('wMeta').value = 0.3;
+            document.getElementById('lambda').value = 0.7;
+            
+            updateWeight('text', 0.4);
+            updateWeight('img', 0.3);
+            updateWeight('meta', 0.3);
+            updateWeight('lambda', 0.7);
+        }
+
+        // Adjust Number Input
+        function adjustValue(id, delta) {
+            const input = document.getElementById(id);
+            const newValue = parseInt(input.value) + delta;
+            const min = parseInt(input.min);
+            const max = parseInt(input.max);
+            
+            if (newValue >= min && newValue <= max) {
+                input.value = newValue;
+            }
+        }
+
+        // Form Submission with Loading
+        document.getElementById('discoveryForm').addEventListener('submit', function(e) {
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            loadingOverlay.classList.remove('hidden');
+            
+            // Simulate processing stages
+            setTimeout(() => {
+                document.querySelector('.loading-text').textContent = 'Computing Similarities...';
+            }, 1000);
+            
+            setTimeout(() => {
+                document.querySelector('.loading-text').textContent = 'Ranking Results...';
+            }, 2000);
+        });
+
+        // Smooth scroll indicator
+        document.querySelector('.scroll-indicator').addEventListener('click', function() {
+            document.querySelector('.main-container').scrollIntoView({ 
+                behavior: 'smooth' 
+            });
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add entrance animations
+            setTimeout(() => {
+                document.querySelector('.hero-content').classList.add('fade-in');
+            }, 100);
+            
+            // Focus search input
+            searchInput.focus();
+        });
+    </script>
+
+</body>
+</html>

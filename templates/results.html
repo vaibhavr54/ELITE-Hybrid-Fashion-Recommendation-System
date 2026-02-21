@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recommendations — LUXE</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="results-page">
+
+    <!-- Header -->
+    <header class="results-header">
+        <div class="header-container">
+            <a href="/" class="logo-link">
+                <div class="brand-mark-small">LUXE</div>
+            </a>
+            <h1 class="page-title">Your Discovery Results</h1>
+            <a href="/" class="new-search-link">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <path d="M2.5 10H17.5M2.5 10L7.5 5M2.5 10L7.5 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span>New Search</span>
+            </a>
+        </div>
+    </header>
+
+    <div class="results-container">
+
+        <!-- Query Product Showcase -->
+        <section class="query-section">
+            <div class="section-label">
+                <span class="label-line"></span>
+                <span class="label-text">YOUR SELECTED ITEM</span>
+                <span class="label-line"></span>
+            </div>
+            
+            <div class="query-showcase">
+                <div class="query-image-container">
+                    <div class="image-badge">Query</div>
+                    <img src="{{ url_for('static', filename='images/' + query.asin + '.jpg') }}" 
+                         alt="{{ query.title }}"
+                         class="query-image">
+                </div>
+                
+                <div class="query-details">
+                    <div class="query-category">{{ query.product_type_name }}</div>
+                    <h2 class="query-title">{{ query.title }}</h2>
+                    
+                    <div class="query-meta-grid">
+                        <div class="meta-item">
+                            <span class="meta-label">Brand</span>
+                            <span class="meta-value">{{ query.brand }}</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Price</span>
+                            <span class="meta-value price">{{ query.formatted_price }}</span>
+                        </div>
+                        {% if params %}
+                        <div class="meta-item">
+                            <span class="meta-label">Results</span>
+                            <span class="meta-value">{{ recommendations|length }} items</span>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    {% if params %}
+                    <div class="algorithm-info">
+                        <h4>Search Parameters</h4>
+                        <div class="params-grid">
+                            <div class="param-pill">
+                                <span class="param-icon">📝</span>
+                                <span>Text: {{ (params.w_text * 100)|round|int }}%</span>
+                            </div>
+                            <div class="param-pill">
+                                <span class="param-icon">🖼️</span>
+                                <span>Visual: {{ (params.w_img * 100)|round|int }}%</span>
+                            </div>
+                            <div class="param-pill">
+                                <span class="param-icon">📊</span>
+                                <span>Metadata: {{ (params.w_meta * 100)|round|int }}%</span>
+                            </div>
+                            <div class="param-pill">
+                                <span class="param-icon">🎯</span>
+                                <span>Diversity: {{ (params.lambda * 100)|round|int }}%</span>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </section>
+
+        <!-- Recommendations Grid -->
+        <section class="recommendations-section">
+            <div class="section-header">
+                <div class="section-label">
+                    <span class="label-line"></span>
+                    <span class="label-text">SIMILAR PRODUCTS</span>
+                    <span class="label-line"></span>
+                </div>
+                <p class="section-description">
+                    Curated using multimodal AI to match style, aesthetics, and attributes
+                </p>
+            </div>
+
+            <div class="products-grid">
+                {% for product in recommendations %}
+                <div class="product-card" data-index="{{ loop.index }}">
+                    <div class="product-image-container">
+                        <div class="rank-badge">#{{ loop.index }}</div>
+                        <img src="{{ url_for('static', filename='images/' + product.asin + '.jpg') }}" 
+                             alt="{{ product.title }}"
+                             class="product-image"
+                             loading="lazy">
+                        <div class="product-overlay">
+                            <button class="quick-view-btn">
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                    <path d="M2.5 10C2.5 10 5.5 4 10 4C14.5 4 17.5 10 17.5 10C17.5 10 14.5 16 10 16C5.5 16 2.5 10 2.5 10Z" stroke="white" stroke-width="2"/>
+                                    <circle cx="10" cy="10" r="2.5" stroke="white" stroke-width="2"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="product-info">
+                        <div class="product-brand">{{ product.brand }}</div>
+                        <h3 class="product-title">
+                            {{ product.title[:60] }}{% if product.title|length > 60 %}...{% endif %}
+                        </h3>
+                        <div class="product-meta">
+                            <span class="product-price">{{ product.formatted_price }}</span>
+                            <span class="product-category">{{ product.product_type_name }}</span>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <!-- Action Buttons -->
+        <div class="action-section">
+            <a href="/" class="action-btn primary">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="2"/>
+                    <path d="M13.5 13.5L17 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+                <span>Discover More Products</span>
+            </a>
+            <button class="action-btn secondary" onclick="window.print()">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <rect x="4" y="4" width="12" height="3" stroke="currentColor" stroke-width="2"/>
+                    <rect x="4" y="13" width="12" height="3" stroke="currentColor" stroke-width="2"/>
+                    <path d="M6 7V4M14 7V4M6 16V13M14 16V13" stroke="currentColor" stroke-width="2"/>
+                    <rect x="2" y="7" width="16" height="6" rx="1" stroke="currentColor" stroke-width="2"/>
+                </svg>
+                <span>Print Results</span>
+            </button>
+        </div>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <div class="brand-mark-small">LUXE</div>
+                <p>AI-Powered Fashion Discovery</p>
+            </div>
+            <div class="footer-tech">
+                <span>Powered by</span>
+                <div class="tech-badges">
+                    <span class="badge">FAISS</span>
+                    <span class="badge">Flask</span>
+                    <span class="badge">Neural Networks</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Staggered entrance animation for product cards
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.product-card');
+            cards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.classList.add('visible');
+                }, index * 80);
+            });
+
+            // Animate query section
+            setTimeout(() => {
+                document.querySelector('.query-showcase').classList.add('visible');
+            }, 200);
+        });
+
+        // Quick view functionality
+        document.querySelectorAll('.quick-view-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const card = this.closest('.product-card');
+                const img = card.querySelector('.product-image');
+                
+                // Create modal overlay
+                const modal = document.createElement('div');
+                modal.className = 'image-modal';
+                modal.innerHTML = `
+                    <div class="modal-backdrop"></div>
+                    <div class="modal-content">
+                        <img src="${img.src}" alt="${img.alt}">
+                        <button class="modal-close">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                <path d="M6 6L18 18M6 18L18 6" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                        </button>
+                    </div>
+                `;
+                
+                document.body.appendChild(modal);
+                
+                setTimeout(() => modal.classList.add('active'), 10);
+                
+                // Close modal
+                modal.querySelector('.modal-close').addEventListener('click', () => {
+                    modal.classList.remove('active');
+                    setTimeout(() => modal.remove(), 300);
+                });
+                
+                modal.querySelector('.modal-backdrop').addEventListener('click', () => {
+                    modal.classList.remove('active');
+                    setTimeout(() => modal.remove(), 300);
+                });
+            });
+        });
+
+        // Smooth scroll to recommendations
+        const querySection = document.querySelector('.query-section');
+        if (querySection) {
+            setTimeout(() => {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            }, 100);
+        }
+    </script>
+
+</body>
+</html>

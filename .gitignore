@@ -1,0 +1,24 @@
+# Virtual Environments
+venv/
+venvv/
+env/
+
+# Python Cache
+__pycache__/
+*.pyc
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# OS files
+.DS_Store
+Thumbs.db
+
+*.json
+*.npy
+*.npz
+*.pkl
+static/images/
+embeddings/
+pickels/
