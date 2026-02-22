@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, jsonify, session, redirect, u
 import json
 import pandas as pd
 import json
+import os
 
 from recommender import (
     hybrid_recommender_faiss, 
@@ -14,10 +15,10 @@ from recommender import (
 )
 
 app = Flask(__name__)
-app.secret_key = "luxe_fashion_ai_2026_super_secure_key_12345"
+app.secret_key = os.environ.get("SECRET_KEY", "dev_key")
 
 # Load dataframe once
-data = pd.read_pickle("pickels/16k_apperal_data_preprocessed")
+# data = pd.read_pickle("pickels/16k_apperal_data_preprocessed")
 
 @app.route("/")
 def home():
@@ -234,5 +235,8 @@ def api_filters():
             'error': str(e)
         }), 500
 
+import os
+
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)

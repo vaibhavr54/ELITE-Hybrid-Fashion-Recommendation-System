@@ -21,4 +21,3 @@ Thumbs.db
 *.pkl
 static/images/
 embeddings/
-pickels/
