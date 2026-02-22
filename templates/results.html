@@ -40,9 +40,10 @@
             <div class="query-showcase">
                 <div class="query-image-container">
                     <div class="image-badge">Query</div>
-                    <img src="{{ url_for('static', filename='images/' + query.asin + '.jpg') }}" 
-                         alt="{{ query.title }}"
-                         class="query-image">
+                    <img src="{{ query.medium_image_url }}" 
+                        alt="{{ query.title }}"
+                        class="query-image"
+                        onerror="this.src='https://via.placeholder.com/300x400?text=No+Image'">
                 </div>
                 
                 <div class="query-details">
@@ -111,10 +112,11 @@
                 <div class="product-card" data-index="{{ loop.index }}">
                     <div class="product-image-container">
                         <div class="rank-badge">#{{ loop.index }}</div>
-                        <img src="{{ url_for('static', filename='images/' + product.asin + '.jpg') }}" 
-                             alt="{{ product.title }}"
-                             class="product-image"
-                             loading="lazy">
+                        <img src="{{ product.medium_image_url }}" 
+                            alt="{{ product.title }}"
+                            class="product-image"
+                            loading="lazy"
+                            onerror="this.src='https://via.placeholder.com/300x400?text=No+Image'">
                         <div class="product-overlay">
                             <button class="quick-view-btn" onclick="showExplanation({{ loop.index0 }})">
                                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none">

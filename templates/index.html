@@ -151,7 +151,7 @@
                         <option value="">Please select a product</option>
                         {% for product in products %}
                             <option value="{{ product.index }}" 
-                                    data-image="{{ product.asin }}" 
+                                    data-image="{{ product.medium_image_url }}"
                                     data-brand="{{ product.brand }}"
                                     data-price="{{ product.formatted_price }}"
                                     data-title="{{ product.title }}"
@@ -515,7 +515,9 @@
                 ${results.map(product => `
                     <div class="result-item" onclick="selectProduct('${product.index}')">
                         <div class="result-image">
-                            <img src="/static/images/${product.asin}.jpg" alt="${product.title}" loading="lazy">
+                            <img src="${product.asin}" alt="${product.title}" 
+                            loading="lazy" 
+                            onerror="this.src='https://via.placeholder.com/300x400?text=No+Image'">
                         </div>
                         <div class="result-info">
                             <div class="result-title">${highlightMatch(product.title, query)}</div>
@@ -581,7 +583,10 @@
                     ${results.map(product => `
                         <div class="browse-item" onclick="selectProduct('${product.index}')">
                             <div class="browse-image">
-                                <img src="/static/images/${product.asin}.jpg" alt="${product.title}" loading="lazy">
+                                <img src="${product.asin}" 
+                                    alt="${product.title}" 
+                                    loading="lazy"
+                                    onerror="this.src='https://via.placeholder.com/300x400?text=No+Image'">
                             </div>
                             <div class="browse-info">
                                 <div class="browse-brand">${product.brand}</div>
@@ -633,7 +638,10 @@
                 const brand = selectedOption.dataset.brand;
                 const price = selectedOption.dataset.price;
                 
-                previewImage.src = `/static/images/${asin}.jpg`;
+                previewImage.src = asin;
+                previewImage.onerror = function() {
+                    this.src = 'https://via.placeholder.com/300x400?text=No+Image';
+                };
                 previewTitle.textContent = selectedOption.dataset.title;
                 previewMeta.innerHTML = `<strong>${brand}</strong> • ${price}`;
                 
