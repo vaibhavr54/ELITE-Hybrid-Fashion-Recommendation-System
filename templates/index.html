@@ -23,6 +23,17 @@
                 Multimodal intelligence combining visual aesthetics, semantic understanding,<br class="hide-mobile">
                 and metadata insights to curate your perfect style match
             </p>
+            <div class="hero-links">
+                <a href="/metrics" class="hero-link">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                        <path d="M2 15L8 9L12 13L18 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <circle cx="8" cy="9" r="2" fill="currentColor"/>
+                        <circle cx="12" cy="13" r="2" fill="currentColor"/>
+                        <circle cx="18" cy="7" r="2" fill="currentColor"/>
+                    </svg>
+                    View Performance Metrics
+                </a>
+            </div>
         </div>
         
         <div class="scroll-indicator">
@@ -169,7 +180,7 @@
                         <span class="label-subtitle">Number of recommendations (1-20)</span>
                     </label>
                     <div class="number-input-wrapper">
-                        <input type="number" name="top_k" id="topK" value="10" min="1" max="25" required>
+                        <input type="number" name="top_k" id="topK" value="8" min="1" max="20" required>
                         <div class="input-controls">
                             <button type="button" class="increment" onclick="adjustValue('topK', 1)">
                                 <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
@@ -257,6 +268,65 @@
                         </div>
                     </div>
 
+                    <!-- FILTERS SECTION -->
+                    <div class="filters-section">
+                        <div class="panel-header" style="margin-top: var(--spacing-xl);">
+                            <h3>Filters</h3>
+                            <p>Narrow down results by price, brand, or category</p>
+                        </div>
+
+                        <!-- Price Range Filter -->
+                        <div class="filter-group">
+                            <label class="filter-label">Price Range</label>
+                            <div class="price-range-inputs">
+                                <div class="price-input">
+                                    <span class="currency">$</span>
+                                    <input type="number" name="price_min" id="priceMin" placeholder="Min" min="0">
+                                </div>
+                                <span class="price-separator">—</span>
+                                <div class="price-input">
+                                    <span class="currency">$</span>
+                                    <input type="number" name="price_max" id="priceMax" placeholder="Max" min="0">
+                                </div>
+                            </div>
+                            <div class="price-suggestions">
+                                <button type="button" class="price-chip" onclick="setPriceRange(0, 50)">Under $50</button>
+                                <button type="button" class="price-chip" onclick="setPriceRange(50, 150)">$50 - $150</button>
+                                <button type="button" class="price-chip" onclick="setPriceRange(150, 999)">$150+</button>
+                            </div>
+                        </div>
+
+                        <!-- Brand Filter -->
+                        <div class="filter-group">
+                            <label class="filter-label">Brands (select multiple)</label>
+                            <select name="brands" id="brandFilter" multiple class="multi-select">
+                                {% for brand in brands[:30] %}
+                                <option value="{{ brand }}">{{ brand }}</option>
+                                {% endfor %}
+                            </select>
+                            <p class="filter-hint">Hold Ctrl/Cmd to select multiple</p>
+                        </div>
+
+                        <!-- Category Filter -->
+                        <div class="filter-group">
+                            <label class="filter-label">Categories (select multiple)</label>
+                            <select name="categories" id="categoryFilter" multiple class="multi-select">
+                                {% for category in categories[:20] %}
+                                <option value="{{ category }}">{{ category }}</option>
+                                {% endfor %}
+                            </select>
+                            <p class="filter-hint">Hold Ctrl/Cmd to select multiple</p>
+                        </div>
+
+                        <!-- Clear Filters Button -->
+                        <button type="button" class="clear-filters-btn" onclick="clearFilters()">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                <path d="M4 4L12 12M4 12L12 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                            Clear All Filters
+                        </button>
+                    </div>
+
                     <!-- Reset Button -->
                     <button type="button" class="reset-btn" onclick="resetWeights()">
                         <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -336,7 +406,7 @@
     <footer class="footer">
         <div class="footer-content">
             <div class="footer-brand">
-                <div class="brand-mark-small">LUXE</div>
+                <div class="brand-mark-small">ELITE</div>
                 <p>AI-Powered Fashion Discovery</p>
             </div>
             <div class="footer-tech">
@@ -627,6 +697,19 @@
             updateWeight('img', 0.3);
             updateWeight('meta', 0.3);
             updateWeight('lambda', 0.7);
+        }
+
+        // Price Range Functions
+        function setPriceRange(min, max) {
+            document.getElementById('priceMin').value = min;
+            document.getElementById('priceMax').value = max;
+        }
+
+        function clearFilters() {
+            document.getElementById('priceMin').value = '';
+            document.getElementById('priceMax').value = '';
+            document.getElementById('brandFilter').selectedIndex = -1;
+            document.getElementById('categoryFilter').selectedIndex = -1;
         }
 
         // Adjust Number Input
