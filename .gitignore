@@ -16,8 +16,6 @@ __pycache__/
 Thumbs.db
 
 *.json
-*.npy
-*.npz
-*.pkl
+
 static/images/
 embeddings/
