@@ -118,6 +118,7 @@ def recommend():
     except Exception as e:
         print(f"Error in recommend: {e}")
         return render_template("error.html", error=str(e))
+    
 @app.route("/results")
 def show_results():
     query_index = session.get('query_index')
@@ -138,43 +139,35 @@ def show_results():
         params=params
     )
 
+import json
+
 @app.route("/metrics")
 def metrics_dashboard():
-    """Metrics dashboard showing model performance"""
     try:
-        # Run evaluation if not recent
-        if not evaluator.metrics_history or \
-           len(evaluator.metrics_history) == 0:
-            print("Running evaluation...")
-            metrics = evaluator.evaluate_system(num_samples=50, k=10)
-        else:
-            metrics = evaluator.metrics_history[-1]['metrics']
-        
-        # Get feedback statistics
+        with open("metrics_data.json", "r") as f:
+            metrics = json.load(f)
+
         feedback_stats = feedback_store.get_statistics()
-        
-        # Get catalog statistics
+
         catalog_stats = {
             'total_products': len(aligned_data),
             'total_brands': aligned_data['brand'].nunique(),
             'total_categories': aligned_data['product_type_name'].nunique(),
             'price_range': get_price_range()
         }
-        
+
         return render_template(
             "metrics.html",
             metrics=metrics,
             feedback_stats=feedback_stats,
             catalog_stats=catalog_stats,
-            metrics_history=evaluator.metrics_history
-        )
-    except Exception as e:
-        print(f"Error in metrics: {e}")
-        return render_template(
-            "error.html",
-            error=str(e)
+            metrics_history=[]
         )
 
+    except Exception as e:
+        print(f"Error in metrics: {e}")
+        return render_template("error.html", error=str(e))
+    
 @app.route("/api/evaluate", methods=["POST"])
 def api_evaluate():
     """API endpoint to run evaluation"""
