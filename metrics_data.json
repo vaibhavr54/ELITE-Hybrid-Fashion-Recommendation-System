@@ -1,0 +1,1 @@
+{"precision@k": 0.968, "recall@k": 1.0, "ndcg@k": 0.997334910199896, "diversity": 0.3097387892815475, "category_diversity": 0.06701826853582177, "coverage": 0.03016447577316314, "precision@k_std": 0.13332666649999167, "recall@k_std": 0.0, "ndcg@k_std": 0.01815731146911724, "diversity_std": 0.07080484447771725, "category_diversity_std": 0.25173773611517364}
