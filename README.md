@@ -36,7 +36,6 @@ The project was designed with recruiter-readiness in mind: it includes a live me
 - **Hard Filtering** — Price range, brand, and category filters applied post-retrieval, pre-ranking
 - **Soft Business Boosting** — Category and price proximity signals boost relevance without overriding semantic similarity
 - **Explainability Layer** — Per-recommendation breakdowns showing text/visual/metadata contribution percentages and matching attributes
-- **User Feedback Loop** — Interaction logging (view, click, like, dislike) with scored feedback storage and statistics
 - **Performance Dashboard** — Live metrics page covering Precision@K, Recall@K, NDCG@K, Diversity, and Catalog Coverage
 - **RESTful API** — JSON endpoints for evaluation, feedback collection, and filter retrieval
 
